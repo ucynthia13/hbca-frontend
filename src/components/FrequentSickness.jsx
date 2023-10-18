@@ -3,26 +3,6 @@ import Chart from 'chart.js/auto'
 import PatientData from './PatientData';
 function FrequentSickness() {
 
-    const chartRef = useRef(null);
-
-    useEffect(() => {
-
-        if(chartRef.current){
-            if(chartRef.current.chart){
-                chartRef.current.chart.destroy();
-            }
-        }
-      })
-
-      const canvas = document.getElementById('sicknessChart')
-      
-      if(canvas){
-        const chartInstance = Chart.getChart(canvas)
-        if(chartInstance){
-            chartInstance.destroy();
-        }
-      }
-
     fetch('http://localhost:5000/hbca/freq_disease')
     .then(response => response.json())
     .then(resp => {
@@ -36,11 +16,17 @@ function FrequentSickness() {
     
 
       const ctx2 = document.getElementById('frequentSickness').getContext('2d');
+
+      const existingChart = Chart.getChart('frequentSickness');
+      
+      if (existingChart) {
+        existingChart.destroy();
+      }
       
       new Chart(ctx2, {
       type: 'line',
       data: {
-        labels: patientName,
+        labels: patientName, 
         datasets: [
           {
             label: 'Heart Rate',
@@ -75,9 +61,13 @@ function FrequentSickness() {
       });
     });
     
+
   return (
+    
     <div className='container'>
-        <canvas id='frequentSickness' ref={chartRef} height={400} width={200}></canvas>
+      
+        <canvas id='frequentSickness'  height={0} width={0}></canvas>
+        
     </div>
   )
 }

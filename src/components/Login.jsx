@@ -1,13 +1,17 @@
 import React, { useState } from 'react'
 
+import { useHistory } from 'react-router-dom'
+
 function Login() {
+    // const history = useHistory()
     const [email, setEmail] = useState('')
     const [psw, setPsw] = useState('')
 
     const handleLogin = async() => {
 
     try {
-        const url = "http://localhost:5000/hbca/login";
+        const url = "http://localhost:5000/hbca/login"
+        
         const response = await fetch(url, {
           method: 'POST',
           headers: {
@@ -20,12 +24,16 @@ function Login() {
           mode: "cors",
         });
   
-        const data = await response.json();
+        const data = await response.json()
         console.log(data);
       } catch (e) {
-        console.error("error: ", e);
+        console.error("error: ", e)
       }
     }
+
+    // if(handleLogin){
+    //   history.push('/patient-data')
+    // }
   return (
     <div className='container'>
         <section className="vh-100" >

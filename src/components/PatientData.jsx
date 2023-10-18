@@ -3,23 +3,6 @@ import FrequentSickness from './FrequentSickness';
 import Chart from 'chart.js/auto'
 function PatientData() {
 
-  const chartRef = useRef(null);
-
-  useEffect(()=> {
-    if(chartRef.current){
-      if(chartRef.current.chart){
-        chartRef.current.chart.destroy();
-      }
-    }
-  })
-
-  const canvas = document.getElementById('frequentSickness')
-  if(canvas){
-    const chartInstance = Chart.getChart(canvas);
-    if(chartInstance){
-      chartInstance.destroy()
-    }
-  }
 
      // Fetch data from Node.js server
      fetch('http://localhost:5000/hbca/display')
@@ -34,10 +17,14 @@ function PatientData() {
        const heartRate = response.data.map(item => item.heart_rate);
        const bodyTemperature = response.data.map(item => item.body_temperature);
 
-       const ctx = document.getElementById('sicknessChart').getContext('2d');
+      //  const ctx = document.getElementById('sicknessChart').getContext('2d');
 
-       //  bar chart
-       new Chart(ctx, {
+      const existingChart = Chart.getChart('sicknessChart');
+      if (existingChart) {
+        existingChart.destroy();
+      }
+
+       new Chart('sicknessChart', {
          type: 'line',
          data: {
            labels: frequentSickness, 
@@ -47,7 +34,7 @@ function PatientData() {
                label: 'Heart Rate',
                backgroundColor: 'rgba(255, 99, 132, 0.2)',
                borderColor: 'rgba(255, 99, 132, 1)',
-               borderWidth: 1,
+               borderWidth: 0.5,
                data: heartRate,
              },
 
@@ -55,7 +42,7 @@ function PatientData() {
                label: 'Body Temperature',
                backgroundColor: 'rgba(75, 192, 192, 0.2)',
                borderColor: 'rgba(75, 192, 192, 1)',
-               borderWidth: 1,
+               borderWidth: 0.5,
                data: bodyTemperature,
              },
            ],
@@ -67,14 +54,18 @@ function PatientData() {
              },
              y: {
                stacked: true,
+
              },
            },
          },
        });
      });
+
+
   return (
-    <div className='container'>
-        <canvas id='sicknessChart' ref={chartRef} height={400} width={200}></canvas>
+    <div className='container w-20 mt-5'>
+      <p className='text-center fw-bold h2 mb-3'>Patient Data</p>
+        <canvas id='sicknessChart'></canvas>
     </div>
   )
 }
